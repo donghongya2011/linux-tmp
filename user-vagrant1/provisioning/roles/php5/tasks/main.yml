@@ -1,0 +1,130 @@
+# ---
+# - name: install php needed packages
+#   action: apt pkg=$item state=installed
+#   with_items:
+#     - build-essential
+#     - libxml2-dev
+#     - libcurl4-gnutls-dev
+
+- name: "mkdir /root/install"
+  shell: mkdir -p /root/install;
+
+- name: "install zmq"
+  shell: cd /root/install;
+         wget http://soft.dev.aifang.com/ansible/zeromq-2.2.0.tar.gz;
+         tar zxvf zeromq-2.2.0.tar.gz;
+         cd zeromq-2.2.0;
+         ./configure --prefix=/usr/local/zeromq-2.2.0;
+         make && make install;
+
+- name: "install rabbitmq"
+  shell: cd /root/install;
+         git clone git://github.com/alanxz/rabbitmq-c.git;
+         cd rabbitmq-c;
+         git submodule init;
+         git submodule update;
+         autoreconf -i && ./configure;
+         make && make install;
+
+- name: "install php"
+  shell: cd /root/install;
+         wget http://soft.dev.aifang.com/ansible/php-5.3.17.tar.gz;
+         tar zxvf php-5.3.17.tar.gz;
+         cd php-5.3.17;
+         ./configure --prefix=/usr/local/php --enable-fpm --with-mysql --with-pdo-mysql --with-curl --with-zlib;
+         make && make install;
+
+- name: "mkdir extensions"
+  shell: mkdir -p /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626;
+
+- name: "install php-extension:bcmath"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/bcmath.so
+
+- name: "install php-extension:sockets"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/sockets.so
+
+- name: "install php-extension:gd"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/gd.so
+
+- name: "install php-extension:mbstring"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/mbstring.so
+
+- name: "install php-extension:apc"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/apc.so
+
+- name: "install php-extension:memcache"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/memcache.so
+
+- name: "install php-extension:msgpack"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/msgpack.so
+
+- name: "make php-extension:php-zmq"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/zmq.so
+
+- name: "install php-extension:solr"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/solr.so
+
+- name: "install php-extension:amqp"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/amqp.so
+
+- name: "install php-extension:redis"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/redis.so
+
+- name: "install uuid"
+  shell: cd /usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/;
+         wget http://soft.dev.aifang.com/ansible/extensions/64/uuid.so
+
+
+
+#php-fpm
+- name: "replace php-fpm.conf"
+  template: src=php-fpm.conf
+            dest=/usr/local/php/etc/php-fpm.conf
+            owner=root
+            group=root
+            mode=0644
+
+- name: "create /usr/local/php/lib"
+  file: path=/usr/local/php/lib
+        state=directory
+        owner=root
+        group=root
+        mode=0755
+
+- name: "replace php.ini"
+  template: src=php.ini 
+            dest=/usr/local/php/lib/php.ini
+            owner=root
+            group=root
+            mode=0644
+
+- name: init php-fpm service
+  template: src=php-fpm
+            dest=/etc/init.d/php-fpm
+            owner=root
+            group=root
+            mode=755
+
+- name: "start php-fpm"
+  shell: nohup /usr/local/php/sbin/php-fpm &
+
+- name: "install chkconfig"
+  apt: pkg=chkconfig
+       state=present
+
+- name: "add php-fpm to restart service"
+  shell: ln -s /usr/lib/insserv/insserv /sbin/insserv;
+         chkconfig php-fpm on;
+
+

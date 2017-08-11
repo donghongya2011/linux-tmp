@@ -1,0 +1,18 @@
+---
+- name: "mkdir /root/install"
+  shell: mkdir -p /root/install
+
+- name: install libmysqlclient-dev
+  apt: pkg=libmysqlclient-dev state=present
+  sudo: yes
+
+- name: "ln libmysqlclient"
+  shell: ln -s /usr/lib/x86_64-linux-gnu/libmysqlclient.so /usr/lib/libmysqlclient.so
+
+# - name: "install mysql-server"
+#   shell: cd /root/install;
+#          wget http://dh.corp.anjuke.com/ansible/mysql-5.5.28.tar.gz;
+#          tar zxvf mysql-5.5.28.tar.gz;
+#          cd mysql-5.5.28;
+#          cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mysql;
+#          make && make install;

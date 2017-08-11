@@ -1,0 +1,8 @@
+---
+- hosts: "vg-server"
+  remote_user: vagrant
+  sudo: yes
+  sudo_user: root
+  roles:
+    - nginx
+

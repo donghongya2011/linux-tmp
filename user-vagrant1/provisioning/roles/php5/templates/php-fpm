@@ -1,0 +1,54 @@
+#!/bin/sh
+
+DAEMON=/usr/local/php/sbin/php-fpm
+NAME=php-fpm
+DESC=php-fpm
+
+test -x $DAEMON || exit 0
+
+set -e
+
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		echo -n "start $NAME: "
+		if [ -n "$ULIMIT" ]; then
+			ulimit $ULIMIT
+		fi
+		start-stop-daemon --start --quiet --pidfile /usr/local/php/var/run/$NAME.pid \
+        	--exec $DAEMON || true
+        echo "[ OK ]"
+        ;;
+
+    stop)
+		echo -n "stop $NAME: "
+		start-stop-daemon --stop --quiet --pidfile /usr/local/php/var/run/$NAME.pid \
+            --exec $DAEMON || true
+        echo "[ OK ]"
+        ;;
+
+    restart)
+		echo -n "restart $NAME: "
+		start-stop-daemon --stop --quiet --pidfile /usr/local/php/var/run/$NAME.pid \
+            --exec $DAEMON || true
+
+        sleep 1
+
+        start-stop-daemon --start --quiet --pidfile /usr/local/php/var/run/$NAME.pid \
+            --exec $DAEMON || true
+        echo "[ OK ]"
+        ;;
+
+    status)
+		status_of_proc -p /usr/local/php/var/run/$NAME.pid "$DAEMON" php-fpm && exit 0 || exit $?
+		;;
+
+	*)
+		echo "Usage: $NAME {start|stop|restart|status}"
+		exit 1
+		;;
+
+esac
+
+exit 0

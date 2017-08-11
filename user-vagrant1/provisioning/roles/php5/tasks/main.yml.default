@@ -1,0 +1,40 @@
+---
+- name: update apt
+  action: command /usr/bin/apt-get update
+
+- name: install python-software-properties
+  action: apt pkg=python-software-properties state=present
+
+- name: add php ppa
+  action: apt_repository repo=ppa:ondrej/php5 state=present
+
+- name: install php packages
+  action: apt pkg=$item state=installed
+  with_items:
+    - php-pear
+    - php-apc
+    - php5-cli
+    - php5-fpm
+    - php5-dev
+    - php5-gd
+    - php5-curl
+    - php5-xdebug
+    - php5-sqlite
+    - php5-mysql
+    - php5-memcache
+    - php5-intl
+    - php5-tidy
+
+- name: write cli php.ini
+  action: template src=cli/php.ini dest=/etc/php5/cli/php.ini
+
+- name: write fpm php.ini
+  action: template src=fpm/php.ini dest=/etc/php5/fpm/php.ini
+
+- name: write php fpm/php-fpm.conf
+  action: template src=fpm/php-fpm.conf dest=/etc/php5/fpm/php-fpm.conf
+
+- name: write php fpm/pool.d/www.conf
+  action: template src=fpm/pool.d/www.conf dest=/etc/php5/fpm/pool.d/www.conf
+
+

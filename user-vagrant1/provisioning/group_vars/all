@@ -1,0 +1,6 @@
+---
+# mysql server root password
+mysql_root_passwd: 123456
+
+kiteline_db_user: kiteline
+kiteline_db_pass: 123456

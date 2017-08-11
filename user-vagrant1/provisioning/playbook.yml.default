@@ -1,0 +1,21 @@
+---
+- name: prepare basic setup
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - common
+
+- name: install mysql
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - mysql
+
+- name: install php5
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - php5

@@ -1,0 +1,23 @@
+
+- name: "chmod jockjs"
+  shell: sudo chmod -R 777 /vagrant/jockjs/
+
+- name: "install user jockjs"
+  shell: cd /home/vagrant;
+         git clone git@git.corp.anjuke.com:jianqiangni/jockjs-config;
+         cd jockjs-config;
+         ./jockjs install user ~^jockjs\..*\.dev\.anjuke\.com;
+         ./jockjs start user;
+
+- name: "install touch jockjs"
+  shell: cd /home/vagrant;
+         cd jockjs-config;
+         ./jockjs install touch ~^jockjs\..*\.dev\.anjuke\.com;
+         ./jockjs start touch;
+
+- name: "install pad jockjs"
+  shell: cd /home/vagrant;
+         cd jockjs-config;
+         ./jockjs install pad ~^jockjs\..*\.dev\.anjuke\.com;
+         ./jockjs start pad;
+

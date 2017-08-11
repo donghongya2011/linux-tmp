@@ -1,0 +1,37 @@
+---
+- name: install common
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - common
+
+- name: install mysql
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - mysql
+
+- name: install php5
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - php5
+
+- name: install nginx
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - nginx
+
+
+- name: install jockjs
+  hosts: all
+  sudo: yes
+  sudo_user: root
+  roles:
+    - jockjs
+

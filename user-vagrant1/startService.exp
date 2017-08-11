@@ -1,0 +1,27 @@
+#!/usr/bin/expect 
+    set timeout 3 
+    set pwd "vagrant"
+spawn ssh vagrant@192.168.33.10 "bash /home/vagrant/startSetvice.sh"
+           expect {
+
+                    "not know" {send_user "[exec echo \"not know\"]";exit}
+
+                    "(yes/no)?" {send "yes\r";exp_continue}
+
+                    "password:" {send  "$pwd\r"}
+
+                    "Permission denied, please try again." {
+
+                        send_user "[exec echo \"Error:Password is wrong\"]"
+
+                        exit  }
+
+
+expect eof
+                    }
+
+
+expect "*#"
+#send "ifconfig\r"
+#send "exit\r"
+#expect eof

@@ -1,0 +1,50 @@
+---
+
+- name: "install nginx"
+  apt: pkg=nginx
+       state=present
+
+- name: remove default nginx site
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+
+- name: write fastcgi_params
+  action: template src=fastcgi_params dest=/etc/nginx/fastcgi_params
+
+- name: write nginx.conf
+  action: template src=nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: write touch.conf
+  action: template src=touch.conf dest=/etc/nginx/sites-enabled/touch.conf
+
+- name: write pages.conf
+  action: template src=pages.conf dest=/etc/nginx/sites-enabled/pages.conf
+
+- name: write anjuke.conf
+  action: template src=anjuke.conf dest=/etc/nginx/sites-enabled/anjuke.conf
+
+- name: write haozu.conf
+  action: template src=haozu.conf dest=/etc/nginx/sites-enabled/haozu.conf
+
+- name: write jinpu.conf
+  action: template src=jinpu.conf dest=/etc/nginx/sites-enabled/jinpu.conf
+
+- name: write user.conf
+  action: template src=user.conf dest=/etc/nginx/sites-enabled/user.conf
+
+- name: write api.conf
+  action: template src=api.conf dest=/etc/nginx/sites-enabled/api.conf
+
+- name: write wechat.conf
+  action: template src=wechat.conf dest=/etc/nginx/sites-enabled/wechat.conf
+
+- name: "change libxml2.so from /usr/local/lib to /usr/lib"
+  shell: libnum=$(ls /usr/local/lib/|grep libxml2.so|wc -l);
+         if [ 0 -ne $libnum ];then
+             mv /usr/local/lib/libxml2.so* /tmp;
+         fi
+#  shell: mv /usr/local/lib/libxml2.so* /tmp;
+
+- name: restart nginx
+  action: service name=nginx state=restarted
+
+

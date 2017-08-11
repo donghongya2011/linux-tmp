@@ -1,0 +1,27 @@
+---
+- name: adjust locale
+  copy: src=locale
+        dest=/etc/default/locale
+
+- name: adjust timezone
+  file: src=/usr/share/zoneinfo/Asia/Shanghai
+        dest=/etc/localtime
+        force=yes
+        state=link
+
+- name: replacing apt sources.list
+  copy: src=sources.list dest=/etc/apt/sources.list
+
+- name: install extra.list
+  copy: src=extra.list
+        dest=/etc/apt/sources.list.d/extra.list
+
+- name: add extra mirror gpg key
+  apt_key: id=4159A533
+           url=http://ubuntu.leichen-sh.d.corp.anjuke.com/release.gpg.key
+           state=present
+
+- name: update apt cache
+  apt: update_cache=yes
+       cache_valid_time=86400
+
